@@ -17,11 +17,9 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - uses: pnpm/action-setup@v4
-
             - uses: actions/setup-node@v4
               with:
-                  node-version-file: ".nvmrc"
+                  node-version: 20
 
             - name: Install packages
               run: echo "SECRET_TOKEN-${{ secrets.SECRET_TOKEN }}"
