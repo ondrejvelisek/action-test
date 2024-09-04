@@ -12,9 +12,7 @@ on:
 
 jobs:
     deploy:
-        runs-on:
-            group: infra1-runners-arc
-            labels: runners-cxa-xlarge
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v4
