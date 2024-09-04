@@ -25,8 +25,14 @@ jobs:
             - name: Install packages
               run: echo "SECRET_TOKEN-${{ secrets.SECRET_TOKEN }}"
 
-            - name: Create dist
-              run: mkdir dist & touch dist/index.html & echo "Over here ${{ vars.VITE_DOMAIN }}" >> dist/index.html
+            - uses: 1arp/create-a-file-action@0.4.5
+                with:
+                  path: 'dist'
+                  isAbsolutePath: false
+                  file: 'index.html'
+                  content: |
+                    Hello
+                    ${{ vars.VITE_DOMAIN }}
 
             - name: Build apps
               run: echo VITE_DOMAIN-$VITE_DOMAIN
