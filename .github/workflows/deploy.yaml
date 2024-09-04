@@ -26,7 +26,7 @@ jobs:
               run: echo "SECRET_TOKEN-${{ secrets.SECRET_TOKEN }}"
 
             - uses: 1arp/create-a-file-action@0.4.5
-                with:
+              with:
                   path: 'dist'
                   isAbsolutePath: false
                   file: 'index.html'
