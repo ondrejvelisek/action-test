@@ -11,6 +11,7 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        environment: develop
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -31,8 +32,7 @@ jobs:
                   isAbsolutePath: false
                   file: 'index.html'
                   content: |
-                    Hello
-                    ${{ vars.VITE_DOMAIN }}
+                    Hello ${{ vars.VITE_DOMAIN }}
 
             - name: Build apps
               run: echo VITE_DOMAIN-$VITE_DOMAIN
