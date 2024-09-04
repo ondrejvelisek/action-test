@@ -7,13 +7,10 @@ on:
     push:
         branches:
             - develop
-            - staging
-            - production
 
 jobs:
-    deploy:
+    build:
         runs-on: ubuntu-latest
-        environment: ${{ github.ref_name }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -28,10 +25,73 @@ jobs:
             - name: Install packages
               run: echo "SECRET_TOKEN-${{ secrets.SECRET_TOKEN }}"
 
+            - name: Create dist
+              run: mkdir dist & touch dist/index.html & echo "Over here ${{ vars.VITE_DOMAIN }}" >> dist/index.html
+
             - name: Build apps
               run: echo VITE_DOMAIN-$VITE_DOMAIN
               env:
                   VITE_DOMAIN: ${{ vars.VITE_DOMAIN }}
 
+    deploy-to-dev:
+        runs-on: ubuntu-latest
+        environment: develop
+        needs: [build]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: ref name
+              run: echo "SECRET_TOKEN-${{ github.ref_name }}"
+
+            - name: check file
+              run: cat dist/index.html
+              
+            - name: Copy artifacts to S3
+              run: echo "S3_BUCKET_NAME-${{ vars.S3_BUCKET_NAME }}"
+
+    deploy-to-stg:
+        runs-on: ubuntu-latest
+        environment: staging
+        needs: [deploy-to-dev]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: ref name
+              run: echo "SECRET_TOKEN-${{ github.ref_name }}"
+
+            - name: check file
+              run: cat dist/index.html
+              
+            - name: Copy artifacts to S3
+              run: echo "S3_BUCKET_NAME-${{ vars.S3_BUCKET_NAME }}"
+
+    deploy-to-prod:
+        runs-on: ubuntu-latest
+        environment: production
+        needs: [deploy-to-stg]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: ref name
+              run: echo "SECRET_TOKEN-${{ github.ref_name }}"
+
+            - name: check file
+              run: cat dist/index.html
+              
             - name: Copy artifacts to S3
               run: echo "S3_BUCKET_NAME-${{ vars.S3_BUCKET_NAME }}"
